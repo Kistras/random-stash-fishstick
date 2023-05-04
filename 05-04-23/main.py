@@ -1,12 +1,19 @@
 import json
-#inp = input() #
 
 def findBiggestContraption(inp):
-    containers = json.loads(inp)
+    containers = [(x[0], x[1]) for x in json.loads(inp)]
     if len(containers) == 0: # Пустой массив
         return 0
     maxLength = 1 # Всегда существует матрешка как минимум из одного контейнера
     tree = []
+    paths = {}
+    for c1 in containers:
+        pos = []
+        for c2 in containers:
+            if c1[0] > c2[0] and c1[1] > c2[1]:
+                pos.append(c2)
+        paths[c1] = pos
+
     for c in containers:
         tree.append([c])
 
@@ -14,7 +21,7 @@ def findBiggestContraption(inp):
         newTree = []
         for e in tree:
             parent = e[-1] # Последний элемент списка
-            for n in containers:
+            for n in paths[parent]:
                 if n[0] < parent[0] and n[1] < parent[1]:
                     path = e.copy()
                     path.append(n)
@@ -30,7 +37,6 @@ def findBiggestContraption(inp):
 
     return maxLength
     # или return len(tree[0]), тогда можно избавиться от maxLength
-    
-# "[[5,4],[6,4],[6,7],[2,3]]"
+
 if __name__ == '__main__':
     print(findBiggestContraption(input()))
